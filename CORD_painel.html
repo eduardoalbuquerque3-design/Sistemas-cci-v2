@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCI - Home</title>
+
+    <link rel="stylesheet" href="CORD_painel.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="continuidade.js"></script>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="logo-area">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCEBRiOnJ4WSaugF7R9v1NsEo_3cIbNliFA&s"
+                    class="logo-img">
+            </div>
+
+            <div class="menu-links">
+
+                <a href="CORD_painel.html" class="nav-link-custom active">
+                    <span class="material-icons-outlined">home</span>
+                    Inicio
+                </a>
+
+                <a href="CORD_turmas.html" class="nav-link-custom">
+                    <span class="material-icons-outlined">groups</span>
+                    Turmas
+                </a>
+
+                <a href="CORD_notas.html" class="nav-link-custom">
+                    <span class="material-icons-outlined">edit_note</span>
+                    Notas
+                </a>
+
+                <a href="CORD_dashboard.html" class="nav-link-custom">
+                    <span class="material-icons-outlined">leaderboard</span>
+                    Painel
+                </a>
+
+            </div>
+
+        </div>
+
+        <button class="btn-sair" onclick="fazerLogout()">
+            <span class="material-icons-outlined">logout</span>
+            Sair
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div>
+
+                <h1>
+                    Bem-vindo,
+                    <span id="nome-usuario"></span> 
+                </h1>
+
+                <p>
+                    Gerencie turmas, notas e informações do SICCI.
+                </p>
+
+            </div>
+
+            <div class="hero-actions">
+
+                <button onclick="executarViradaDeSemestre()" class="btn-warning-custom">
+                    <span class="material-icons-outlined"></span>
+                    Encerrar Semestre Letivo
+                </button>
+
+                <a href="CORD_cadastroprof.html" class="btn-green">
+                    <span class="material-icons-outlined">person_add</span>
+                    Cadastrar Professor
+                </a>
+
+                <a href="CORD_cadastroaluno.html" class="btn-outline">
+                    <span class="material-icons-outlined">school</span>
+                    Cadastrar Aluno
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- CARDS -->
+
+        <section class="cards-grid">
+
+            <!-- TURMAS -->
+
+            <div class="card-cci"
+                onclick="window.location.href='CORD_turmas.html'">
+
+                <div class="card-icon green">
+                    <span class="material-icons-outlined">groups</span>
+                </div>
+
+                <h3>Turmas</h3>
+
+                <p>
+                    Administração de turmas e frequência dos alunos.
+                </p>
+
+                <button class="card-button">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </button>
+
+            </div>
+
+            <!-- NOTAS -->
+
+            <div class="card-cci"
+                onclick="window.location.href='CORD_notas.html'">
+
+                <div class="card-icon blue">
+                    <span class="material-icons-outlined">edit_note</span>
+                </div>
+
+                <h3>Notas</h3>
+
+                <p>
+                    Controle e gerenciamento de notas acadêmicas.
+                </p>
+
+                <button class="card-button">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </button>
+
+            </div>
+
+            <!-- PAINEL -->
+
+            <div class="card-cci"
+                onclick="window.location.href='CORD_dashboard.html'">
+
+                <div class="card-icon cyan">
+                    <span class="material-icons-outlined">leaderboard</span>
+                </div>
+
+                <h3>Painel</h3>
+
+                <p>
+                    Visualize estatísticas e informações gerais.
+                </p>
+
+                <button class="card-button">
+                    <span class="material-icons-outlined">arrow_forward</span>
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const nomeSalvo = localStorage.getItem('usuarioNome');
+
+            if (nomeSalvo) {
+                document.getElementById('nome-usuario').textContent = nomeSalvo;
+            } else {
+                window.location.href = "telalogin.html";
+            }
+
+        });
+
+        function fazerLogout() {
+
+            Swal.fire({
+                title: 'Deseja sair?',
+                icon: 'question',
+                background: '#0f172a',
+                color: '#fff',
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#334155',
+                showCancelButton: true,
+                confirmButtonText: 'Sair'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    localStorage.clear();
+                    window.location.href = "telalogin.html";
+                }
+
+            });
+
+        }
+
+    </script>
+
+    <script src="auth.js"></script>
+    
+
+</body>
+
+</html>

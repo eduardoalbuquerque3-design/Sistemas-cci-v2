@@ -1,0 +1,43 @@
+.navbar-custom {
+    background-color: #3da4b8;
+
+    padding: 12px 20px;
+}
+
+.logo-area {
+    background: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 35px;
+}
+
+.nav-link-custom {
+    color: white;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 18px;
+    background-color: #d0dbe435;
+    transition: 0.3s;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom.active {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-sair {
+    background-color: #ff0202ae;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 18px;
+}

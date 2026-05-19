@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCI - Sistema de Notas</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CORD_notas.css">
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .filter-container {
+            padding: 10px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Comfortaa', sans-serif;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .turma-group-header {
+            background: #e0f2f1;
+            padding: 8px 15px;
+            font-weight: bold;
+            color: #00796b;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #b2dfdb;
+        }
+
+        .student-item-btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            font-family: 'Comfortaa', sans-serif;
+            transition: 0.2s;
+        }
+
+        .student-item-btn:hover {
+            background: #f0fbfc;
+        }
+
+        .active-student {
+            background: #0096ab !important;
+            color: white !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar-custom">
+        <div class="container d-flex align-items-center justify-content-between py-2">
+            <div class="logo-area">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCEBRiOnJ4WSaugF7R9v1NsEo_3cIbNliFA&s"
+                    class="logo-img">
+            </div>
+            <div class="menu-links d-flex gap-2 align-items-center">
+                <a href="PROF_painel.html" class="nav-link-custom">Inicio</a>
+                <a href="PROF_turmas.html" class="nav-link-custom">Turmas</a>
+                <a href="PROF_notas.html" class="nav-link-custom">Notas</a>
+                <a href="PROF_dashboard.html" class="nav-link-custom">Painel</a>
+                <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h1 class="sidebar-title">Alunos</h1>
+
+            <div class="filter-container">
+                <select id="filtro-turma" class="filter-select" onchange="renderizarListaFiltrada()">
+                    <option value="todos">Exibir: Todos os Alunos</option>
+                </select>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="busca-aluno" placeholder="Pesquisar por nome..." onkeyup="filtrarListaAlunos()">
+            </div>
+
+            <ul class="student-list" id="student-list">
+                <li style="padding: 20px; color: #666;">Carregando alunos...</li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <div class="header-content">
+                <h2>Lançamento de Notas</h2>
+                <button id="btn-editar-notas" class="btn-editar" onclick="toggleEdicao()">Editar</button>
+            </div>
+
+            <div class="grade-card" id="boletim">
+                <div class="card-top-info">
+                    <input type="hidden" id="current-student-id">
+                    <div>Nome: <strong id="display-name">Selecione um aluno</strong></div>
+                    <div>Turma: <strong id="display-course">---</strong></div>
+                </div>
+
+                <div id="periodos-container" class="periodos-grid">
+                    <div class="placeholder-aviso">Escolha um aluno na lista ao lado.</div>
+                </div>
+
+                <div class="footer-boletim">
+                    <div class="media-final-wrapper">
+                        <span>Média Final (Anual):</span>
+                        <div class="status-badge" id="display-final">0.0</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvSOKw2VTeG1uMDqDn3-SWi0Hsf2z6i2w",
+            authDomain: "sistema-cci-2026.firebaseapp.com",
+            databaseURL: "https://sistema-cci-default-rtdb.firebaseio.com/",
+            projectId: "sistema-cci-2026",
+            storageBucket: "sistema-cci-2026.firebasestorage.app",
+            messagingSenderId: "633401547904",
+            appId: "1:633401547904:web:0572615ffba4227a6f5a65"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let todosOsAlunos = {};
+        let editando = false;
+
+        function iniciarAplicacao() {
+            db.ref('alunos').on('value', (snapshot) => {
+                todosOsAlunos = snapshot.val();
+                atualizarSeletorTurmas();
+                renderizarListaFiltrada();
+            });
+        }
+
+        function atualizarSeletorTurmas() {
+            const select = document.getElementById('filtro-turma');
+            const turmasEncontradas = new Set();
+
+            if (todosOsAlunos) {
+                Object.values(todosOsAlunos).forEach(aluno => {
+                    if (aluno.turma) turmasEncontradas.add(aluno.turma);
+                });
+            }
+            select.innerHTML = '<option value="todos">Exibir: Todos os Alunos</option>';
+
+            Array.from(turmasEncontradas).sort().forEach(turma => {
+                const opt = document.createElement('option');
+                opt.value = turma;
+                opt.innerText = `Turma: ${turma}`;
+                select.appendChild(opt);
+            });
+        }
+        function renderizarListaFiltrada() {
+            const listaUl = document.getElementById('student-list');
+            const filtro = document.getElementById('filtro-turma').value;
+            listaUl.innerHTML = "";
+            if (!todosOsAlunos) {
+                listaUl.innerHTML = "<li style='padding:10px;'>Nenhum aluno cadastrado.</li>";
+                return;
+            }
+            const turmasAgrupadas = {};
+            Object.keys(todosOsAlunos).forEach(id => {
+                const aluno = todosOsAlunos[id];
+                if (filtro === "todos" || aluno.turma === filtro) {
+                    const t = aluno.turma || "Sem Turma";
+                    if (!turmasAgrupadas[t]) turmasAgrupadas[t] = [];
+                    turmasAgrupadas[t].push({ id, ...aluno });
+                }
+            });
+            Object.keys(turmasAgrupadas).sort().forEach(nomeTurma => {
+                const header = document.createElement('div');
+                header.className = "turma-group-header";
+                header.innerText = nomeTurma;
+                listaUl.appendChild(header);
+                turmasAgrupadas[nomeTurma].forEach(aluno => {
+                    const li = document.createElement('li');
+                    const nome = aluno.nome_completo || aluno.nome || "Sem Nome";
+                    li.innerHTML = `<button class="student-item-btn" id="btn-${aluno.id}" onclick="selecionarAluno('${aluno.id}')">${nome}</button>`;
+                    listaUl.appendChild(li);
+                });
+            });
+        }
+
+        function selecionarAluno(id) {
+            document.querySelectorAll('.student-item-btn').forEach(b => b.classList.remove('active-student'));
+            const btn = document.getElementById(`btn-${id}`);
+            if (btn) btn.classList.add('active-student');
+            const aluno = todosOsAlunos[id];
+            document.getElementById('current-student-id').value = id;
+            document.getElementById('display-name').innerText = aluno.nome_completo || aluno.nome || "---";
+            document.getElementById('display-course').innerText = aluno.turma || "---";
+            renderizarNotas(aluno.notas);
+            editando = false;
+            atualizarBotao();
+        }
+        function renderizarNotas(notasExistentes) {
+            const container = document.getElementById('periodos-container');
+            container.innerHTML = "";
+            let somaMedias = 0;
+
+            for (let i = 1; i <= 4; i++) {
+                const chave = `p${i}`;
+                const n = (notasExistentes && notasExistentes[chave]) ? notasExistentes[chave] : { n1: 0, n2: 0 };
+                const valN1 = parseFloat(n.n1 || 0);
+                const valN2 = parseFloat(n.n2 || 0);
+                const mediaPeriodo = (valN1 + valN2).toFixed(1);
+                somaMedias += parseFloat(mediaPeriodo);
+
+                container.innerHTML += `
+                    <div class="periodo-box">
+                        <h4>${i}º Período</h4>
+                        <div class="inputs-nota">
+                            <label>N1: <input type="number" step="0.1" class="edit-nota" data-p="${chave}" data-tipo="n1" value="${valN1}" disabled></label>
+                            <label>N2: <input type="number" step="0.1" class="edit-nota" data-p="${chave}" data-tipo="n2" value="${valN2}" disabled></label>
+                        </div>
+                        <div class="media-periodo">Total: <strong>${mediaPeriodo}</strong></div>
+                    </div>
+                `;
+            }
+            document.getElementById('display-final').innerText = (somaMedias / 4).toFixed(1);
+        }
+
+        function toggleEdicao() {
+            const id = document.getElementById('current-student-id').value;
+            if (!id) return Swal.fire('Aviso', 'Selecione um aluno primeiro.', 'warning');
+
+            if (editando) {
+                const novasNotas = {};
+                document.querySelectorAll('.edit-nota').forEach(input => {
+                    const p = input.dataset.p;
+                    const tipo = input.dataset.tipo;
+                    if (!novasNotas[p]) novasNotas[p] = {};
+                    novasNotas[p][tipo] = parseFloat(input.value) || 0;
+                });
+
+                db.ref(`alunos/${id}/notas`).update(novasNotas).then(() => {
+                    Swal.fire('Sucesso!', 'Notas atualizadas.', 'success');
+                });
+            } else {
+                editando = true;
+                document.querySelectorAll('.edit-nota').forEach(i => i.disabled = false);
+                atualizarBotao();
+            }
+        }
+
+        function atualizarBotao() {
+            const btn = document.getElementById('btn-editar-notas');
+            btn.innerText = editando ? "Salvar Notas" : "Editar";
+            btn.style.background = editando ? "#2ecc71" : "#3da4b8";
+        }
+
+        function filtrarListaAlunos() {
+            const busca = document.getElementById('busca-aluno').value.toLowerCase();
+            document.querySelectorAll('.student-item-btn').forEach(btn => {
+                const nome = btn.innerText.toLowerCase();
+                btn.parentElement.style.display = nome.includes(busca) ? "" : "none";
+            });
+        }
+
+        iniciarAplicacao();
+        function fazerLogout() {
+            if (confirm("Deseja realmente sair?")) {
+                localStorage.clear();
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+
+</html>

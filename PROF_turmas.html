@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Salas - CCI</title>
+    <link rel="stylesheet" href="CORD_turmas.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf-plugin-autotable.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+    <nav class="navbar-custom">
+        <div class="container d-flex align-items-center justify-content-between py-2">
+            <div class="logo-area">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCEBRiOnJ4WSaugF7R9v1NsEo_3cIbNliFA&s"
+                    class="logo-img">
+            </div>
+            <div class="menu-links d-flex gap-2 align-items-center">
+                <a href="PROF_painel.html" class="nav-link-custom">Inicio</a>
+                <a href="PROF_turmas.html" class="nav-link-custom">Turmas</a>
+                <a href="PROF_notas.html" class="nav-link-custom">Notas</a>
+                <a href="PROF_dashboard.html" class="nav-link-custom">Painel</a>
+                <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container2">
+        <div class="controls">
+            <div class="tabs">
+                <button class="tab active" onclick="abrirTurma(event, 'sala1')">Sala 01</button>
+                <button class="tab" onclick="abrirTurma(event, 'sala2')">Sala 02</button>
+                <button class="tab" onclick="abrirTurma(event, 'sala3')">Sala 03</button>
+                <button class="tab" onclick="abrirTurma(event, 'sala4')">Sala 04</button>
+            </div>
+
+            <div class="filtros-aula d-flex gap-2">
+                <select class="semestre-select" id="filtroDisciplina">
+                    <option value="ingles">Inglês</option>
+                    <option value="espanhol">Espanhol</option>
+                </select>
+                <select class="semestre-select" id="filtroSemestre">
+                    <option value="1">1º Semestre</option>
+                    <option value="2">2º Semestre</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="salaH" class="tabela-turma ativa">
+            <h3 class="info-aula">Sala 1 - Lista de Alunos</h3>
+            <div class="search-container">
+                <input type="text" id="inputBusca" placeholder="Procurar aluno pelo nome" onkeyup="filtrarTabela()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Aluno</th>
+                        <th>Frequência na Disciplina</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="salaG" class="tabela-turma">
+            <h3 class="info-aula">Sala 2 - Lista de Alunos</h3>
+            <div class="search-container">
+                <input type="text" id="inputBusca" placeholder="Procurar aluno pelo nome" onkeyup="filtrarTabela()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Aluno</th>
+                        <th>Frequência na Disciplina</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="salaT" class="tabela-turma">
+            <h3 class="info-aula">Sala 3 - Lista de Alunos</h3>
+            <div class="search-container">
+                <input type="text" id="inputBusca" placeholder="Procurar aluno pelo nome" onkeyup="filtrarTabela()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Aluno</th>
+                        <th>Frequência na Disciplina</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="salaI" class="tabela-turma">
+            <h3 class="info-aula">Sala 4 - Lista de Alunos</h3>
+            <div class="search-container">
+                <input type="text" id="inputBusca" placeholder="Procurar aluno pelo nome" onkeyup="filtrarTabela()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Aluno</th>
+                        <th>Frequência na Disciplina</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <button class="btn-exportar" onclick="gerarPDF()">📄 Exportar Relatório da Sala</button>
+    </main>
+
+    <div id="modalAluno" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="fecharModal()">&times;</span>
+
+            <h2 id="m-nome-display" style="color: #3da4b8; margin-bottom: 5px;">Nome do Aluno</h2>
+
+            <p
+                style="font-size: 16px; color: #444; margin-bottom: 20px; background: #fff5f5; padding: 10px; border-radius: 8px; display: inline-block; border: 1px solid #ffe3e3;">
+                Total de faltas no semestre: <b id="m-faltas-total" style="color: #ff6b6b; font-size: 20px;">0</b>
+            </p>
+
+            <div class="modal-grid" id="form-detalhes">
+                <input type="hidden" id="edit-id">
+
+                <div class="info-group">
+                    <h4>Dados Pessoais</h4>
+                    <p><strong>CPF:</strong> <input type="text" id="edit-cpf" readonly></p>
+                    <p><strong>Nascimento:</strong> <input type="text" id="edit-nascimento" readonly></p>
+                    <p><strong>Telefone:</strong> <input type="text" id="edit-tel" readonly></p>
+                </div>
+
+                <div class="info-group">
+                    <h4>Responsável</h4>
+                    <p><strong>Nome:</strong> <input type="text" id="edit-resp-nome" readonly></p>
+                    <p><strong>Telefone:</strong> <input type="text" id="edit-resp-tel" readonly></p>
+                </div>
+
+                <div class="info-group">
+                    <h4>Acadêmico</h4>
+                    <p><strong>Turno:</strong> <input type="text" id="edit-turno" readonly></p>
+                    <p>
+                        <strong>Turma:</strong>
+                        <select id="edit-turma" disabled
+                            style="padding: 2px; border-radius: 4px; border: 1px solid #ddd; background: #f9f9f9;">
+                            <option value="Sala 01">1</option>
+                            <option value="Sala 02">2</option>
+                            <option value="Sala 03">3</option>
+                            <option value="Sala 04">4</option>
+                        </select>
+                    </p>
+                    <p><strong>Situação:</strong> <input type="text" id="edit-situacao" readonly></p>
+                </div>
+
+                <div class="info-group" style="grid-column: span 2;">
+                    <div class="registro-frequencia">
+                        <div class="header-calendario">
+                            <h4 style="color: #3da4b8; margin-bottom: 10px;">Registro de Frequência</h4>
+                            <div id="seletor-meses" class="meses-grid">
+                                <button onclick="mudarMes(0)">Jan</button>
+                                <button onclick="mudarMes(1)">Fev</button>
+                                <button onclick="mudarMes(2)">Mar</button>
+                                <button onclick="mudarMes(3)">Abr</button>
+                                <button onclick="mudarMes(4)">Mai</button>
+                                <button onclick="mudarMes(5)">Jun</button>
+                                <button onclick="mudarMes(6)">Jul</button>
+                                <button onclick="mudarMes(7)">Ago</button>
+                                <button onclick="mudarMes(8)">Set</button>
+                                <button onclick="mudarMes(9)">Out</button>
+                                <button onclick="mudarMes(10)">Nov</button>
+                                <button onclick="mudarMes(11)">Dez</button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-wrapper">
+                            <div class="dias-semana">
+                                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                            </div>
+                            <div id="calendario-faltas" class="calendar-grid"></div>
+                        </div>
+
+                        <div class="legenda-container" style="margin-top: 10px; display: flex; gap: 15px;">
+                            <div class="item-legenda"><span class="box-falta"
+                                    style="background:#ff6b6b; width:12px; height:12px; display:inline-block;"></span>
+                                Falta</div>
+                            <div class="item-legenda"><span class="box-justificada"
+                                    style="background:#ff9f43; width:12px; height:12px; display:inline-block;"></span>
+                                Justificada</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer"
+                style="margin-top: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="carregaralunos.js"></script>
+    <script>
+        function fazerLogout() {
+            if (confirm("Deseja realmente sair?")) {
+                localStorage.clear(); 
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
