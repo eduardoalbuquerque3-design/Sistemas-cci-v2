@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Salas - CCI</title>
 
-    <link rel="stylesheet" href="CORD_painel.css">
-    <link rel="stylesheet" href="CORD_turmas.css">
+    <link rel="stylesheet" href="style.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
@@ -17,24 +16,18 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 
 <body>
 
     <aside class="sidebar">
-
         <div>
-
             <div class="logo-area">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCEBRiOnJ4WSaugF7R9v1NsEo_3cIbNliFA&s"
-                    class="logo-img">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCEBRiOnJ4WSaugF7R9v1NsEo_3cIbNliFA&s" class="logo-img">
             </div>
 
             <div class="menu-links">
-
                 <a href="CORD_painel.html" class="nav-link-custom">
                     <span class="material-icons-outlined">home</span>
                     Inicio
@@ -54,38 +47,35 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                     <span class="material-icons-outlined">leaderboard</span>
                     Painel
                 </a>
-
             </div>
-
         </div>
 
         <button class="btn-sair" onclick="fazerLogout()">
             <span class="material-icons-outlined">logout</span>
             Sair
         </button>
-
     </aside>
 
-    <main class="main-content">
+    <main class="main-content-turmas">
         
         <header style="margin-bottom: 20px;">
             <h1 style="font-size: 28px; font-weight: 600;">Gestão de Salas</h1>
             <p style="color: #94a3b8;">Gerencie a frequência e dados dos alunos por turma.</p>
         </header>
 
-        <div class="controls" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;">
+        <div class="controls-turmas" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;">
             
-            <div class="tabs">
+            <div class="tabs-turmas">
                 <button class="tab active" onclick="abrirTurma(event, 'sala1')">Sala 01</button>
                 <button class="tab" onclick="abrirTurma(event, 'sala2')">Sala 02</button>
                 <button class="tab" onclick="abrirTurma(event, 'sala3')">Sala 03</button>
                 <button class="tab" onclick="abrirTurma(event, 'sala4')">Sala 04</button>
             </div>
-            <div class="search-container" >
+            <div class="search-container-turmas">
                 <input type="text" id="inputBusca" placeholder="Procurar aluno pelo nome..." onkeyup="filtrarTabela()">
             </div>
             
-            <div class="filtros-aula" >
+            <div class="filtros-aula-turmas">
                 <select class="disciplina-select" id="filtroDisciplina">
                     <option value="ingles">Inglês</option>
                     <option value="espanhol">Espanhol</option>
@@ -96,7 +86,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                     <option value="2">2º Semestre</option>
                     <option value="3">3º Semestre</option>
                     <option value="4">4º Semestre</option>
-                    
                 </select>
                 
                 <select class="horario-select">
@@ -105,9 +94,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
             </div>
         </div>
         
-        <section class="content-section">
+        <section class="content-section-turmas">
             
-            <div id="sala1" class="tabela-turma ativa">
+            <div id="sala1" class="tabela-turma-turmas ativa-turmas">
                 <table>
                     <thead>
                         <tr>
@@ -119,8 +108,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                 </table>
             </div>
 
-            <div id="sala2" class="tabela-turma">
-                <div class="search-container" style="margin-bottom: 20px;">
+            <div id="sala2" class="tabela-turma-turmas">
+                <div class="search-container-turmas" style="margin-bottom: 20px;">
                     <input type="text" placeholder="Procurar aluno pelo nome..." onkeyup="filtrarTabela()">
                 </div>
                 <table>
@@ -134,10 +123,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                 </table>
             </div>
 
-            <div id="sala3" class="tabela-turma">
+            <div id="sala3" class="tabela-turma-turmas">
                 <table><thead><tr><th>Nome do Aluno</th><th>Frequência</th></tr></thead><tbody></tbody></table>
             </div>
-            <div id="sala4" class="tabela-turma">
+            <div id="sala4" class="tabela-turma-turmas">
                 <table><thead><tr><th>Nome do Aluno</th><th>Frequência</th></tr></thead><tbody></tbody></table>
             </div>
 
@@ -151,30 +140,29 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
 
     </main>
 
-    <div id="modalAluno" class="modal">
-        <div class="modal-content" style="background: #0f172a; border: 1px solid rgba(255,255,255,0.1);">
-            <span class="close-button" onclick="fecharModal()">&times;</span>
+    <div id="modalAluno" class="modal-turmas">
+        <div class="modal-content-turmas" style="background: #0f172a; border: 1px solid rgba(255,255,255,0.1);">
+            <span class="close-button-turmas" onclick="fecharModal()">&times;</span>
             <h2 id="m-nome-display">Nome do Aluno</h2>
-            <p class="faltas-texto">Total de faltas no semestre: <b id="m-faltas-total">0</b></p>
+            <p class="faltas-texto-turmas">Total de faltas no semestre: <b id="m-faltas-total">0</b></p>
 
-            <div class="modal-grid" id="form-detalhes">
+            <div class="modal-grid-turmas" id="form-detalhes">
                 <input type="hidden" id="edit-id">
-                <div class="info-group">
+                <div class="info-group-turmas">
                     <h4>Dados Pessoais</h4>
                     <p><strong>Nome:</strong> <input type="text" id="edit-nome" readonly></p>
                     <p><strong>Nascimento:</strong> <input type="text" id="edit-nascimento" readonly></p>
                     <p><strong>CPF:</strong> <input type="text" id="edit-cpf" readonly></p>
                     <p><strong>Telefone:</strong> <input type="text" id="edit-tel" readonly></p>
                 </div>
-                <div class="info-group">
+                <div class="info-group-turmas">
                     <h4>Responsável</h4>
                     <p><strong>Nome:</strong> <input type="text" id="edit-resp-nome" readonly></p>
                     <p><strong>Telefone:</strong> <input type="text" id="edit-resp-tel" readonly></p>
-                    <p><strong>CPF:</strong> <input type="text" id="edit-resp-cpf" readonly></strong></p>
+                    <p><strong>CPF:</strong> <input type="text" id="edit-resp-cpf" readonly></p>
                     <p><strong>Parentesco:</strong> <input type="text" id="edit-resp-parentesco" readonly></p>
-
                 </div>
-                <div class="info-group">
+                <div class="info-group-turmas">
                     <h4>Acadêmico</h4>
                     <p><strong>Turno:</strong> <input type="text" id="edit-turno" readonly></p>
                     <p>
@@ -187,13 +175,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                         </select>
                     </p>
                     <p><strong>Situação:</strong> <input type="text" id="edit-situacao" readonly></p>
-                    <p><strong>Escola:</strong> <input type="text" id="edit-escola-nome" readonly></strong></p>
-                    <p><strong>Turma da Escola:</strong> <input type="text" id="edit-escola-ano" readonly></strong></p>
-                    <p><strong>Turma CCI:</strong> <input type="text" id="edit-escola-turma" readonly></strong></p>
+                    <p><strong>Escola:</strong> <input type="text" id="edit-escola-nome" readonly></p>
+                    <p><strong>Turma da Escola:</strong> <input type="text" id="edit-escola-ano" readonly></p>
+                    <p><strong>Turma CCI:</strong> <input type="text" id="edit-escola-turma" readonly></p>
                 </div>
-                <div class="info-group">
+                <div class="info-group-turmas">
                     <h4>Informações</h4>
-                    <p><strong>Email:</strong> <input type="text" id="edit-email" readonly></strong></p>
+                    <p><strong>Email:</strong> <input type="text" id="edit-email" readonly></p>
                     <p><strong>Endereço:</strong> <input type="text" id="edit-endereco" readonly></p>
                     <p><strong>Número:</strong> <input type="text" id="edit-numero" readonly></p>
                     <p><strong>CEP:</strong> <input type="text" id="edit-cep" readonly></p>
@@ -201,11 +189,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                     <p><strong>Cidade:</strong> <input type="text" id="edit-cidade" readonly></p>
                     <p><strong>UF:</strong> <input type="text" id="edit-uf" readonly></p>
                     <p><strong>Complemento:</strong> <input type="text" id="edit-complemento" readonly></p>
-
                 </div>
-                <div class="info-group" style="grid-column: span 2;">
-                    <div class="registro-frequencia">
-                        <div id="seletor-meses" class="meses-grid">
+                <div class="info-group-turmas" style="grid-column: span 2;">
+                    <div class="registro-frequencia-turmas">
+                        <div id="seletor-meses" class="meses-grid-turmas">
                             <button onclick="mudarMes(0)">Jan</button> <button onclick="mudarMes(1)">Fev</button>
                             <button onclick="mudarMes(2)">Mar</button> <button onclick="mudarMes(3)">Abr</button>
                             <button onclick="mudarMes(4)">Mai</button> <button onclick="mudarMes(5)">Jun</button>
@@ -213,12 +200,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                             <button onclick="mudarMes(8)">Set</button> <button onclick="mudarMes(9)">Out</button>
                             <button onclick="mudarMes(10)">Nov</button> <button onclick="mudarMes(11)">Dez</button>
                         </div>
-                        <div id="calendario-faltas" class="calendar-grid"></div>
+                        <div id="calendario-faltas" class="calendar-grid-turmas"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
+            <div class="modal-footer-turmas">
                 <button id="btn-editar" class="btn-edit" onclick="habilitarEdicao()">Editar Informações</button>
                 <button id="btn-salvar" class="btn-save" style="display:none;" onclick="salvarEdicao()">Salvar Alterações</button>
             </div>
@@ -227,7 +214,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
 
     <script src="carregaralunos.js"></script>
     <script>
-        // Função de logout compatível com o painel
         function fazerLogout() {
             Swal.fire({
                 title: 'Deseja sair?',
@@ -245,6 +231,42 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/
                 }
             });
         }
+        // Executa assim que a página carrega para verificar a escolha anterior do usuário
+document.addEventListener("DOMContentLoaded", function() {
+    const temaSalvo = localStorage.getItem("tema-escolhido");
+    
+    if (temaSalvo === "light") {
+        document.body.classList.add("light-theme");
+        atualizarInterfaceBotao(true);
+    }
+});
+
+function alternarTema() {
+    const body = document.body;
+    body.classList.toggle("light-theme");
+    
+    const ehModoClaro = body.classList.contains("light-theme");
+    
+    // Salva o estado atual no navegador
+    localStorage.setItem("tema-escolhido", ehModoClaro ? "light" : "dark");
+    
+    atualizarInterfaceBotao(ehModoClaro);
+}
+
+function atualizarInterfaceBotao(ehModoClaro) {
+    const icone = document.getElementById("tema-icon");
+    const texto = document.getElementById("tema-texto");
+    
+    if (icone && texto) {
+        if (ehModoClaro) {
+            icone.textContent = "dark_mode";
+            texto.textContent = "Modo Escuro";
+        } else {
+            icone.textContent = "light_mode";
+            texto.textContent = "Modo Claro";
+        }
+    }
+}
     </script>
 </body>
 </html>

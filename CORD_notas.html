@@ -6,27 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCI - Sistema de Notas</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="CORD_notas.css">
+    <link rel="stylesheet" href="style.css">
 
-    <!-- FONTES -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-    <!-- ALERT -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-
-    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
@@ -70,13 +64,9 @@
 
     </aside>
 
-    <!-- MAIN -->
+    <main class="main-content-notas">
 
-    <main class="main-content">
-
-        <!-- HERO -->
-
-        <section class="hero notas-hero">
+        <section class="hero-notas notas-hero-notas">
 
             <div>
                 <h1>
@@ -89,7 +79,7 @@
                 </p>
             </div>
 
-            <div class="hero-actions">
+            <div class="hero-actions-notas">
 
                 <button class="btn-outline" onclick="exportarPDF()">
                     <span class="material-icons-outlined">picture_as_pdf</span>
@@ -97,19 +87,15 @@
                 </button>
 
                 <button id="btn-editar-notas" class="btn-green" onclick="toggleEdicao()">
-
                     <span class="material-icons-outlined">edit</span>
                     Editar
-
                 </button>
+                
                 <button class="btn-green" onclick="document.getElementById('importarNotas').click()">
-
                     <span class="material-icons-outlined">
                         upload
                     </span>
-
                     Importar Planilha
-
                 </button>
 
                 <input type="file" id="importarNotas" accept=".xlsx,.csv" hidden>
@@ -118,35 +104,29 @@
 
         </section>
 
-        <!-- CONTAINER -->
+        <section class="notas-layout-notas">
 
-        <section class="notas-layout">
+            <aside class="students-panel-notas">
 
-            <!-- SIDEBAR ALUNOS -->
-
-            <aside class="students-panel">
-
-                <div class="panel-top">
+                <div class="panel-top-notas">
 
                     <h2>Alunos</h2>
 
-                    <div class="filtro-wrapper">
+                    <div class="filtro-wrapper-notas">
 
                         <span class="material-icons-outlined">
                             filter_alt
                         </span>
 
                         <select id="filtro-turma" onchange="renderizarListaFiltrada()">
-
                             <option value="todos">
                                 Todas as Turmas
                             </option>
-
                         </select>
 
                     </div>
 
-                    <div class="search-box">
+                    <div class="search-box-notas">
 
                         <span class="material-icons-outlined">
                             search
@@ -159,21 +139,17 @@
 
                 </div>
 
-                <ul class="student-list" id="student-list">
-
-                    <li class="loading-student">
+                <ul class="student-list-notas" id="student-list">
+                    <li class="loading-student-notas">
                         Carregando alunos...
                     </li>
-
                 </ul>
 
             </aside>
 
-            <!-- BOLETIM -->
+            <section class="boletim-panel-notas">
 
-            <section class="boletim-panel">
-
-                <div class="boletim-header">
+                <div class="boletim-header-notas">
 
                     <div>
 
@@ -190,7 +166,7 @@
 
                     </div>
 
-                    <div class="media-final-card">
+                    <div class="media-final-card-notas">
 
                         <span>Média Final</span>
 
@@ -202,11 +178,9 @@
 
                 </div>
 
-                <!-- PERIODOS -->
+                <div id="periodos-container" class="periodos-grid-notas">
 
-                <div id="periodos-container" class="periodos-grid">
-
-                    <div class="placeholder-aviso">
+                    <div class="placeholder-aviso-notas">
 
                         <span class="material-icons-outlined">
                             school
@@ -225,8 +199,6 @@
         </section>
 
     </main>
-
-    <!-- JS -->
 
     <script>
 
@@ -310,7 +282,7 @@
             if (!todosOsAlunos) {
 
                 lista.innerHTML =
-                    "<li class='loading-student'>Nenhum aluno encontrado.</li>";
+                    "<li class='loading-student-notas'>Nenhum aluno encontrado.</li>";
 
                 return;
 
@@ -406,21 +378,21 @@
 
                 container.innerHTML += `
 
-                    <div class="periodo-card">
+                    <div class="periodo-card-notas">
 
-                        <div class="periodo-top">
+                        <div class="periodo-top-notas">
 
                             <h3>${i}º Período</h3>
 
-                            <div class="media-badge">
+                            <div class="media-badge-notas">
                                 ${media}
                             </div>
 
                         </div>
 
-                        <div class="inputs-grid">
+                        <div class="inputs-grid-notas">
 
-                            <div class="input-group">
+                            <div class="input-group-notas">
 
                                 <label>N1</label>
 
@@ -436,7 +408,7 @@
 
                             </div>
 
-                            <div class="input-group">
+                            <div class="input-group-notas">
 
                                 <label>N2</label>
 
@@ -722,6 +694,42 @@
             reader.readAsArrayBuffer(arquivo);
 
         }
+        // Executa assim que a página carrega para verificar a escolha anterior do usuário
+document.addEventListener("DOMContentLoaded", function() {
+    const temaSalvo = localStorage.getItem("tema-escolhido");
+    
+    if (temaSalvo === "light") {
+        document.body.classList.add("light-theme");
+        atualizarInterfaceBotao(true);
+    }
+});
+
+function alternarTema() {
+    const body = document.body;
+    body.classList.toggle("light-theme");
+    
+    const ehModoClaro = body.classList.contains("light-theme");
+    
+    // Salva o estado atual no navegador
+    localStorage.setItem("tema-escolhido", ehModoClaro ? "light" : "dark");
+    
+    atualizarInterfaceBotao(ehModoClaro);
+}
+
+function atualizarInterfaceBotao(ehModoClaro) {
+    const icone = document.getElementById("tema-icon");
+    const texto = document.getElementById("tema-texto");
+    
+    if (icone && texto) {
+        if (ehModoClaro) {
+            icone.textContent = "dark_mode";
+            texto.textContent = "Modo Escuro";
+        } else {
+            icone.textContent = "light_mode";
+            texto.textContent = "Modo Claro";
+        }
+    }
+}
     </script>
 
 </body>

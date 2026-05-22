@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCI - Home</title>
 
-    <link rel="stylesheet" href="CORD_painel.css">
+    <link rel="stylesheet" href="style.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -66,30 +66,23 @@
 
     <!-- MAIN -->
 
-    <main class="main-content">
-
-        <!-- TOPBAR -->
-
-
-
-        <!-- HERO -->
-
-        <section class="hero">
+    <main class="main-content-painel">
+        <section class="hero-painel">
 
             <div>
 
-                <h1>
+                <h1 class="titulo-painel">
                     Bem-vindo,
-                    <span id="nome-usuario"></span> 
+                    <span id="nome-usuario-painel"></span>
                 </h1>
 
-                <p>
+                <p class="descricao-painel">
                     Gerencie turmas, notas e informações do SICCI.
                 </p>
 
             </div>
 
-            <div class="hero-actions">
+            <div class="hero-actions-painel">
 
                 <button onclick="executarViradaDeSemestre()" class="btn-warning-custom">
                     <span class="material-icons-outlined"></span>
@@ -111,21 +104,24 @@
         </section>
 
         <!-- CARDS -->
-
-        <section class="cards-grid">
+<button class="btn-tema" id="btn-tema" onclick="alternarTema()">
+    <span class="material-icons-outlined" id="tema-icon">light_mode</span>
+    <span id="tema-texto">Modo Claro</span>
+</button>
+        <section class="cards-grid-painel">
 
             <!-- TURMAS -->
 
-            <div class="card-cci"
+            <div class="card-cci-painel"
                 onclick="window.location.href='CORD_turmas.html'">
 
-                <div class="card-icon green">
+                <div class="card-icon-painel green-painel">
                     <span class="material-icons-outlined">groups</span>
                 </div>
 
-                <h3>Turmas</h3>
+                <h3 class="titulo-card-painel">Turmas</h3>
 
-                <p>
+                <p class="descricao-card-painel">
                     Administração de turmas e frequência dos alunos.
                 </p>
 
@@ -137,16 +133,16 @@
 
             <!-- NOTAS -->
 
-            <div class="card-cci"
+            <div class="card-cci-painel"
                 onclick="window.location.href='CORD_notas.html'">
 
-                <div class="card-icon blue">
+                <div class="card-icon-painel blue-painel">
                     <span class="material-icons-outlined">edit_note</span>
                 </div>
 
-                <h3>Notas</h3>
+                <h3 class="titulo-card-painel">Notas</h3>
 
-                <p>
+                <p class="descricao-card-painel">
                     Controle e gerenciamento de notas acadêmicas.
                 </p>
 
@@ -158,16 +154,16 @@
 
             <!-- PAINEL -->
 
-            <div class="card-cci"
+            <div class="card-cci-painel"
                 onclick="window.location.href='CORD_dashboard.html'">
 
-                <div class="card-icon cyan">
+                <div class="card-icon-painel cyan-painel">
                     <span class="material-icons-outlined">leaderboard</span>
                 </div>
 
-                <h3>Painel</h3>
+                <h3 class="titulo-card-painel">Painel</h3>
 
-                <p>
+                <p class="descricao-card-painel">
                     Visualize estatísticas e informações gerais.
                 </p>
 
@@ -182,13 +178,48 @@
     </main>
 
     <script>
+// Executa assim que a página carrega para verificar a escolha anterior do usuário
+document.addEventListener("DOMContentLoaded", function() {
+    const temaSalvo = localStorage.getItem("tema-escolhido");
+    
+    if (temaSalvo === "light") {
+        document.body.classList.add("light-theme");
+        atualizarInterfaceBotao(true);
+    }
+});
 
+function alternarTema() {
+    const body = document.body;
+    body.classList.toggle("light-theme");
+    
+    const ehModoClaro = body.classList.contains("light-theme");
+    
+    // Salva o estado atual no navegador
+    localStorage.setItem("tema-escolhido", ehModoClaro ? "light" : "dark");
+    
+    atualizarInterfaceBotao(ehModoClaro);
+}
+
+function atualizarInterfaceBotao(ehModoClaro) {
+    const icone = document.getElementById("tema-icon");
+    const texto = document.getElementById("tema-texto");
+    
+    if (icone && texto) {
+        if (ehModoClaro) {
+            icone.textContent = "dark_mode";
+            texto.textContent = "Modo Escuro";
+        } else {
+            icone.textContent = "light_mode";
+            texto.textContent = "Modo Claro";
+        }
+    }
+}
         document.addEventListener('DOMContentLoaded', () => {
 
             const nomeSalvo = localStorage.getItem('usuarioNome');
 
             if (nomeSalvo) {
-                document.getElementById('nome-usuario').textContent = nomeSalvo;
+                document.getElementById('nome-usuario-painel').textContent = nomeSalvo;
             } else {
                 window.location.href = "telalogin.html";
             }
@@ -220,7 +251,6 @@
     </script>
 
     <script src="auth.js"></script>
-    
 
 </body>
 
